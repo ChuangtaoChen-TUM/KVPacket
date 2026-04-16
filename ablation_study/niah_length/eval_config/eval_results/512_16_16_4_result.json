@@ -1,0 +1,48 @@
+{
+    "config": {
+        "model": {
+            "model_path": "/mnt/storage/data/model_files/llama_3_1/8b_instruct/model",
+            "dtype": "bfloat16",
+            "device": "cuda:0",
+            "generation_kwargs": {
+                "max_new_tokens": 128,
+                "stop_strings": [
+                    "<|eot_id|>"
+                ],
+                "do_sample": false,
+                "use_cache": true
+            }
+        },
+        "dataset": {
+            "dataset_name": "niah",
+            "num_samples": 100,
+            "num_data_strs": 0,
+            "num_shots": 0,
+            "subset": "8192",
+            "split": "test",
+            "seed": 42,
+            "data_kwargs": {
+                "chunk_size": 2048
+            },
+            "template": "llama_chat",
+            "template_kwargs": {}
+        },
+        "cache_comb": {
+            "method": "kv_packet",
+            "kwargs": {}
+        },
+        "packet_wrapper": "./ablation_study/niah_length/packet_wrapper/512/16_16.pt.epoch4",
+        "compress": null,
+        "quantization": null,
+        "seed": 42
+    },
+    "result": {
+        "precision": 0.5363984674329502,
+        "recall": 0.4794520547945205,
+        "f1": 0.5063291139240506,
+        "ttft": 0.05551625728607178,
+        "flops": 934514524.16,
+        "num_orig_tokens": 765720,
+        "num_wrapped_tokens": 811832
+    }
+}

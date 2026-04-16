@@ -1,0 +1,12 @@
+{
+    "cache_comb": {
+        "method": "sam_kv",
+        "kwargs": {
+            "stable_layers":  [32, 33, 34, 35],
+            "num_initial_tokens": 8,
+            "num_local_tokens": 16,
+            "block_size": 8,
+            "fuse_theta": 0.9
+        }
+    }
+}

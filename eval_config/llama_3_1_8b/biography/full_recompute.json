@@ -1,0 +1,6 @@
+{
+    "cache_comb": {
+        "method": "full_recompute",
+        "kwargs": {}
+    }
+}

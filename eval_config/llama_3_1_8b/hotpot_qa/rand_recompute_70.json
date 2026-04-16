@@ -1,0 +1,8 @@
+{
+    "cache_comb": {
+        "method": "rand_recompute",
+        "kwargs": {
+            "recompute_ratio": 0.7
+        }
+    }
+}

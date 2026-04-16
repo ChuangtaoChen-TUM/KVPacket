@@ -1,0 +1,52 @@
+{
+    "config": {
+        "model": {
+            "model_path": "/mnt/storage/data/model_files/llama_3_1/8b_instruct/model",
+            "dtype": "bfloat16",
+            "device": "cuda:0",
+            "generation_kwargs": {
+                "max_new_tokens": 256,
+                "stop_strings": [
+                    "<|eot_id|>"
+                ],
+                "do_sample": false,
+                "use_cache": true
+            }
+        },
+        "dataset": {
+            "dataset_name": "musique",
+            "num_samples": 100,
+            "num_data_strs": 0,
+            "num_shots": 0,
+            "subset": "default",
+            "split": "validation",
+            "seed": 42,
+            "data_kwargs": {
+                "add_inst": true,
+                "add_cot": true
+            },
+            "template": "llama_chat",
+            "template_kwargs": {}
+        },
+        "cache_comb": {
+            "method": "kv_packet",
+            "kwargs": {}
+        },
+        "packet_wrapper": "./packet_wrapper/llama_3_1_8b/musique/8_8_10_sl.pt",
+        "compress": {
+            "method": "lagkv",
+            "compression_ratio": 0.4,
+            "keep_filler_tokens": false,
+            "kwargs": {}
+        },
+        "quantization": null,
+        "seed": 42
+    },
+    "result": {
+        "precision": 0.5483870967741935,
+        "recall": 0.18478260869565216,
+        "f1": 0.2764227642276423,
+        "ttft": 0.038689749240875246,
+        "flops": 184754339.84
+    }
+}

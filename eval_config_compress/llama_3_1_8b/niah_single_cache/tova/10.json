@@ -1,0 +1,6 @@
+{
+    "compress": {
+        "compression_ratio": 0.1,
+        "keep_filler_tokens": false
+    }
+}

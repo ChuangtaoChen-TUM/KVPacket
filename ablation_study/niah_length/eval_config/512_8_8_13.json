@@ -1,0 +1,1 @@
+{"dataset": {"data_kwargs": {"chunk_size": 2048}}, "cache_comb": {"method": "kv_packet", "kwargs": {}}, "packet_wrapper": "./ablation_study/niah_length/packet_wrapper/512/8_8.pt.epoch13"}

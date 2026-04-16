@@ -1,0 +1,8 @@
+{
+    "cache_comb": {
+        "method": "cache_blend",
+        "kwargs": {
+            "recompute_ratio": 0.3
+        }
+    }
+}

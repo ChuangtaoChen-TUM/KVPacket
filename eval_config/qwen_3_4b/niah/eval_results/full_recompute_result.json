@@ -1,0 +1,46 @@
+{
+    "config": {
+        "model": {
+            "model_path": "/mnt/storage/data/model_files/qwen_3/4b_instruct/model/",
+            "dtype": "bfloat16",
+            "device": "cuda:0",
+            "generation_kwargs": {
+                "max_new_tokens": 128,
+                "stop_strings": [
+                    "<|im_end|>"
+                ],
+                "do_sample": false,
+                "use_cache": true
+            }
+        },
+        "dataset": {
+            "dataset_name": "niah",
+            "num_samples": 100,
+            "num_data_strs": 0,
+            "num_shots": 0,
+            "subset": "8192",
+            "split": "test",
+            "seed": 42,
+            "data_kwargs": {
+                "chunk_size": 4096
+            },
+            "template": "qwen_3_chat",
+            "template_kwargs": {}
+        },
+        "cache_comb": {
+            "method": "full_recompute",
+            "kwargs": {}
+        },
+        "packet_wrapper": null,
+        "compress": null,
+        "quantization": null,
+        "seed": 42
+    },
+    "result": {
+        "precision": 0.41080196399345337,
+        "recall": 0.8595890410958904,
+        "f1": 0.5559246954595792,
+        "ttft": 1.0457189226150512,
+        "flops": 102614711418224.64
+    }
+}

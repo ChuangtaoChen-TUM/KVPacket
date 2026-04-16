@@ -1,0 +1,48 @@
+{
+    "config": {
+        "model": {
+            "model_path": "/mnt/storage/data/model_files/llama_3_1/8b_instruct/model",
+            "dtype": "bfloat16",
+            "device": "cuda:0",
+            "generation_kwargs": {
+                "max_new_tokens": 128,
+                "stop_strings": [
+                    "<|eot_id|>"
+                ],
+                "do_sample": false,
+                "use_cache": true
+            }
+        },
+        "dataset": {
+            "dataset_name": "niah",
+            "num_samples": 100,
+            "num_data_strs": 0,
+            "num_shots": 0,
+            "subset": "8192",
+            "split": "test",
+            "seed": 42,
+            "data_kwargs": {
+                "chunk_size": 4096
+            },
+            "template": "llama_chat",
+            "template_kwargs": {}
+        },
+        "cache_comb": {
+            "method": "rand_recompute",
+            "kwargs": {
+                "recompute_ratio": 0.9
+            }
+        },
+        "packet_wrapper": null,
+        "compress": null,
+        "quantization": null,
+        "seed": 42
+    },
+    "result": {
+        "precision": 0.6081424936386769,
+        "recall": 0.8184931506849316,
+        "f1": 0.6978102189781022,
+        "ttft": 0.9967418789863587,
+        "flops": 124015758903705.6
+    }
+}

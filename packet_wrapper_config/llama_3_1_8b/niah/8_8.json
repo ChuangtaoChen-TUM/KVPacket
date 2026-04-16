@@ -1,0 +1,48 @@
+{
+    "total_epoch": 30,
+    "batch_size": 64,
+    "gen_batch_size": 4,
+    "forward_batch_size": 8,
+    "header_len": 8,
+    "trailer_len": 8,
+    "use_logits": true,
+    "model": {
+        "model_path": "/mnt/storage/data/model_files/llama_3_1/8b_instruct/model",
+        "dtype": "bfloat16",
+        "device": "cuda:0",
+        "generation_kwargs": {
+            "max_new_tokens": 128,
+            "stop_strings": ["<|eot_id|>"],
+            "do_sample": false,
+            "use_cache": true
+        }
+    },
+    "cache_device": "cpu",
+    "seed": 42,
+    "ckpt_epoch": 0,
+    "save_path": "./packet_wrapper/llama_3_1_8b/niah",
+    "file_name": "8_8.pt",
+    "opt_config": {
+        "lr": 5e-4,
+        "weight_decay": 0.0
+    },
+    "scheduler_config":{
+        "start_factor": 1.0,
+        "end_factor": 0.0
+    },
+    "data_configs": [
+        {
+            "dataset_name": "niah",
+            "num_samples": 512,
+            "num_data_strs": 0,
+            "num_shots": 0,
+            "subset": "8192",
+            "split": "train",
+            "seed": 0,
+            "data_kwargs": {
+                "chunk_size": 4096
+            },
+            "template": "llama_chat"
+        }
+    ]
+}

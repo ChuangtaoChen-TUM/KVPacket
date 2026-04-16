@@ -1,0 +1,51 @@
+{
+    "config": {
+        "model": {
+            "model_path": "/mnt/storage/data/model_files/llama_3_1/8b_instruct/model",
+            "dtype": "bfloat16",
+            "device": "cuda:0",
+            "generation_kwargs": {
+                "max_new_tokens": 32,
+                "stop_strings": [
+                    "<|eot_id|>"
+                ],
+                "do_sample": false,
+                "use_cache": true
+            }
+        },
+        "dataset": {
+            "dataset_name": "biography",
+            "num_samples": 100,
+            "num_data_strs": 5,
+            "num_shots": 0,
+            "subset": "10k",
+            "split": "test",
+            "seed": 42,
+            "data_kwargs": {
+                "question_type": "QA"
+            },
+            "template": "llama_chat",
+            "template_kwargs": {}
+        },
+        "cache_comb": {
+            "method": "kv_packet",
+            "kwargs": {}
+        },
+        "packet_wrapper": "./packet_wrapper/llama_3_1_8b/biography/8_8.pt",
+        "compress": {
+            "method": "leverage_score",
+            "compression_ratio": 0.2,
+            "keep_filler_tokens": false,
+            "kwargs": {}
+        },
+        "quantization": null,
+        "seed": 42
+    },
+    "result": {
+        "precision": 0.9812206572769953,
+        "recall": 0.9587155963302753,
+        "f1": 0.9698375870069604,
+        "ttft": 0.040620369911193846,
+        "flops": 46172241.92
+    }
+}

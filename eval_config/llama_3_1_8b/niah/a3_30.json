@@ -1,0 +1,8 @@
+{
+    "cache_comb": {
+        "method": "a3",
+        "kwargs": {
+            "recompute_ratio":  0.3
+        }
+    }
+}

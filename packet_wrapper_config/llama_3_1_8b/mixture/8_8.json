@@ -1,0 +1,144 @@
+{
+    "total_epoch": 30,
+    "batch_size": 64,
+    "gen_batch_size": 4,
+    "forward_batch_size": 8,
+    "header_len": 8,
+    "trailer_len": 8,
+    "use_logits": true,
+    "model": {
+        "model_path": "/mnt/storage/data/model_files/llama_3_1/8b_instruct/model",
+        "dtype": "bfloat16",
+        "device": "auto",
+        "generation_kwargs": {
+            "max_new_tokens": 512,
+            "stop_strings": ["<|eot_id|>"],
+            "do_sample": false,
+            "use_cache": true
+        }
+    },
+    "cache_device": "cpu",
+    "seed": 42,
+    "ckpt_epoch": 5,
+    "save_path": "./packet_wrapper/llama_3_1_8b/mixture/",
+    "file_name": "8_8.pt",
+    "opt_config": {
+        "lr": 5e-4,
+        "weight_decay": 0.0
+    },
+    "scheduler_config":{
+        "start_factor": 1.0,
+        "end_factor": 0.0
+    },
+    "data_configs": [
+        {
+            "dataset_name": "biography",
+            "num_samples": 16,
+            "num_data_strs": 2,
+            "num_shots": 0,
+            "subset": "10k",
+            "split": "train",
+            "seed": 0,
+            "data_kwargs": {
+                "question_type": "QA",
+                "cache_dataset": true
+            },
+            "template": "llama_chat",
+            "template_kwargs": {
+                "question_pos": "end"
+            }
+        },
+        {
+            "dataset_name": "biography",
+            "num_samples": 16,
+            "num_data_strs": 3,
+            "num_shots": 0,
+            "subset": "10k",
+            "split": "train",
+            "seed": 1,
+            "data_kwargs": {
+                "question_type": "QA",
+                "cache_dataset": true
+            },
+            "template": "llama_chat",
+            "template_kwargs": {
+                "question_pos": "end"
+            }
+        },
+        {
+            "dataset_name": "biography",
+            "num_samples": 16,
+            "num_data_strs": 5,
+            "num_shots": 0,
+            "subset": "10k",
+            "split": "train",
+            "seed": 2,
+            "data_kwargs": {
+                "question_type": "QA",
+                "cache_dataset": true
+            },
+            "template": "llama_chat",
+            "template_kwargs": {
+                "question_pos": "end"
+            }
+        },
+        {
+            "dataset_name": "biography",
+            "num_samples": 16,
+            "num_data_strs": 7,
+            "num_shots": 0,
+            "subset": "10k",
+            "split": "train",
+            "seed": 3,
+            "data_kwargs": {
+                "question_type": "QA",
+                "cache_dataset": true
+            },
+            "template": "llama_chat",
+            "template_kwargs": {
+                "question_pos": "end"
+            }
+        },
+        {
+            "dataset_name": "niah",
+            "num_samples": 128,
+            "num_data_strs": 0,
+            "num_shots": 0,
+            "subset": "8192",
+            "split": "train",
+            "seed": 0,
+            "data_kwargs": {
+                "chunk_size": 4096
+            },
+            "template": "llama_chat"
+        },
+        {
+            "dataset_name": "musique",
+            "num_samples": 128,
+            "num_data_strs": 0,
+            "num_shots": 0,
+            "subset": "default",
+            "split": "train",
+            "seed": 0,
+            "data_kwargs": {
+                "add_inst": true,
+                "add_cot": true
+            },
+            "template": "llama_chat"
+        },
+        {
+            "dataset_name": "hotpot_qa",
+            "num_samples": 128,
+            "num_data_strs": 0,
+            "num_shots": 0,
+            "subset": "fullwiki",
+            "split": "train",
+            "seed": 0,
+            "data_kwargs": {
+                "add_inst": true,
+                "add_cot": true
+            },
+            "template": "llama_chat"
+        }
+    ]
+}

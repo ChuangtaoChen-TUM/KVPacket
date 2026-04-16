@@ -1,0 +1,40 @@
+{
+    "model": {
+        "model_path": "/mnt/storage/data/model_files/llama_3_1/8b_instruct/model",
+        "dtype": "bfloat16",
+        "device": "cuda:0",
+        "generation_kwargs": {
+            "max_new_tokens": 128,
+            "stop_strings": [
+                "<|eot_id|>"
+            ],
+            "do_sample": false,
+            "use_cache": true
+        }
+    },
+    "dataset": {
+        "dataset_name": "niah",
+        "num_samples": 100,
+        "num_data_strs": 0,
+        "num_shots": 0,
+        "subset": "8192",
+        "split": "test",
+        "seed": 42,
+        "data_kwargs": {
+            "chunk_size": 4096
+        },
+        "template": "llama_chat"
+    },
+    "seed": 42,
+    "cache_comb": {
+        "method": "kv_packet",
+        "kwargs": {}
+    },
+    "packet_wrapper": "./packet_wrapper/llama_3_1_8b/niah/8_8.pt",
+    "compress": {
+        "method": "qfilter",
+        "kwargs": {
+            "model_name": "Llama-3.1-8B-Instruct"
+        }
+    }
+}

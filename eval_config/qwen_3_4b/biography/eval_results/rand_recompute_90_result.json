@@ -1,0 +1,48 @@
+{
+    "config": {
+        "model": {
+            "model_path": "/mnt/storage/data/model_files/qwen_3/4b_instruct/model/",
+            "dtype": "bfloat16",
+            "device": "cuda:0",
+            "generation_kwargs": {
+                "max_new_tokens": 32,
+                "stop_strings": [
+                    "<|im_end|>"
+                ],
+                "do_sample": false,
+                "use_cache": true
+            }
+        },
+        "dataset": {
+            "dataset_name": "biography",
+            "num_samples": 100,
+            "num_data_strs": 5,
+            "num_shots": 0,
+            "subset": "10k",
+            "split": "test",
+            "seed": 42,
+            "data_kwargs": {
+                "question_type": "QA"
+            },
+            "template": "qwen_3_chat",
+            "template_kwargs": {}
+        },
+        "cache_comb": {
+            "method": "rand_recompute",
+            "kwargs": {
+                "recompute_ratio": 0.9
+            }
+        },
+        "packet_wrapper": null,
+        "compress": null,
+        "quantization": null,
+        "seed": 42
+    },
+    "result": {
+        "precision": 0.8728813559322034,
+        "recall": 0.944954128440367,
+        "f1": 0.907488986784141,
+        "ttft": 0.06830621480941773,
+        "flops": 2722405046169.6
+    }
+}

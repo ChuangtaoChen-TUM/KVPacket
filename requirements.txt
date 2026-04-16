@@ -1,0 +1,18 @@
+# PyTorch CUDA build — must be resolved from the PyTorch index
+--extra-index-url https://download.pytorch.org/whl/cu130
+torch==2.10.0+cu130
+
+# Direct dependencies
+accelerate==1.13.0
+alive-progress==3.3.0
+datasets==2.21.0
+dowhen==0.1.0
+kvpress==0.5.1
+matplotlib==3.10.8
+nltk==3.9.3
+numpy==2.3.5
+optimum==2.1.0
+optimum-quanto==0.2.7
+pandas==2.3.3
+rich==14.3.3
+transformers==5.3.0

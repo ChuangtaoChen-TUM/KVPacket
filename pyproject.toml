@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "kv-packet"
+version = "0.1.0"
+description = "Reusing precomputed KV caches with trainable soft-token headers and trailers"
+requires-python = ">=3.11"
+dependencies = [
+    # torch CUDA build requires the PyTorch index URL at install time:
+    #   pip install -e . --index-url https://download.pytorch.org/whl/cu130
+    "torch==2.10.0",
+    "transformers==5.3.0",
+    "accelerate==1.13.0",
+    "datasets==2.21.0",
+    "kvpress==0.5.1",
+    "optimum==2.1.0",
+    "optimum-quanto==0.2.7",
+    "alive-progress==3.3.0",
+    "rich==14.3.3",
+    "nltk==3.9.3",
+    "numpy==2.3.5",
+    "pandas==2.3.3",
+    "matplotlib==3.10.8",
+    "dowhen==0.1.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["kv_packet*"]

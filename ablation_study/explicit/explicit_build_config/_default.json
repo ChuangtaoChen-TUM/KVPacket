@@ -1,0 +1,9 @@
+{
+    "model": {
+        "model_path": "/mnt/storage/data/model_files/llama_3_1/8b_instruct/model",
+        "dtype": "bfloat16",
+        "device": "cuda:0"
+    },
+    "save_path": "./ablation_study/explicit/explicit_wrapper/",
+    "dtype": "float32"
+}
