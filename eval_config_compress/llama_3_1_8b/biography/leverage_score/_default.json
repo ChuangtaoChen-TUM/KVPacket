@@ -1,6 +1,6 @@
 {
     "model": {
-        "model_path": "/mnt/storage/data/model_files/llama_3_1/8b_instruct/model",
+        "model_path": "meta-llama/Llama-3.1-8B-Instruct",
         "dtype": "bfloat16",
         "device": "cuda:0",
         "generation_kwargs": {
