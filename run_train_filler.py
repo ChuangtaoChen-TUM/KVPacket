@@ -54,7 +54,7 @@ def train_wrapper_4d_batch(
 
     if forward_batch_size <= 0:
         forward_batch_size = batch_size
-    
+
     if batch_size % forward_batch_size != 0:
         raise ValueError("batch_size must be multiple of forward_batch_size")
 
@@ -174,7 +174,7 @@ def train_wrapper_4d_batch(
                 ).sum(-1) # [f_batch_size, max_gen_seq_len]
 
                 loss = (loss * eval_mask).sum()
-            
+
             else:
                 target_ids = get_packed_labels(
                     batched_samples,
@@ -192,7 +192,7 @@ def train_wrapper_4d_batch(
                 ) # [f_batch_size * max_gen_seq_len]
 
                 loss = (loss * eval_mask.reshape(-1)).sum()
-            
+
             loss.backward()
             acc_loss += loss.item()
 
@@ -335,7 +335,7 @@ def train_wrapper_4d(
         input_embed_list.append(query_embed)
 
         input_embed = torch.cat(input_embed_list, dim=1)
-    
+
         outputs = model(
             inputs_embeds=input_embed,
             attention_mask=packet_attn_mask,
@@ -555,9 +555,8 @@ def train_one_config(
             subset=data_config["subset"],
             split=data_config["split"],
             seed=data_config["seed"],
+            tokenizer=tokenizer,
             data_kwargs=data_config["data_kwargs"],
-            template=data_config["template"],
-            template_kwargs=data_config["template_kwargs"],
         )
         samples.extend([TrainSample(**sample,) for sample in eval_generator]) # type: ignore
 
@@ -588,7 +587,7 @@ def train_one_config(
         print(f"Advancing scheduler {steps_to_skip} steps...")
         for _ in range(steps_to_skip):
             scheduler.step()
-    
+
         for _ in range(start_epoch):
             random.shuffle(epoch_indices)
 

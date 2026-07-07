@@ -33,8 +33,6 @@ class DatasetConfig(TypedDict):
     split: str
     seed: int
     data_kwargs: dict
-    template: str
-    template_kwargs: dict
 
 
 class TrainConfig(TypedDict):
@@ -90,8 +88,6 @@ def load_train_config(config: dict) -> TrainConfig:
             split=data_conf.get("split", "train"),
             seed=data_conf.get("seed", 42),
             data_kwargs=data_conf.get("data_kwargs", {}),
-            template=data_conf.get("template", ""),
-            template_kwargs=data_conf.get("template_kwargs", {}),
         )
         data_configs.append(data_config)
     seed = config.get("seed", 42)
@@ -175,7 +171,7 @@ def packet_4d_mask(
         start = end
 
     attn_mask[-query_len:, :-query_len] = 1  # Query tokens can attend to all
-    
+
     if sliding_window is not None:
         assert sliding_window > 0, "sliding_window must be positive."
 
@@ -186,7 +182,7 @@ def packet_4d_mask(
                 "the earliest chunks, which may cause information loss during retrieval.",
                 UserWarning
             )
-        
+
         swa_mask = torch.triu(
             torch.ones((total_seq_len, total_seq_len), dtype=torch.bool, device=device),
             diagonal=-sliding_window
@@ -238,7 +234,7 @@ def batched_input_embed(
     padding_side: str = 'left',
     padding_tensor: torch.Tensor|None = None,
 ) -> torch.Tensor:
-    """ 
+    """
     Pad a batch of input embeddings to the same sequence length.
     Args:
         input_embed_list (list[torch.Tensor]): List of input embeddings of shape (1, seq_len, dim).
@@ -271,7 +267,7 @@ def batched_input_embed(
     for i, embed in enumerate(input_embed_list):
         seq_len = embed.size(1)
         pad_len = max_seq_len - seq_len
-        
+
         if pad_len > 0:
             pad_embed = padding_tensor.repeat(1, pad_len, 1)
             if padding_side == 'left':
@@ -280,7 +276,7 @@ def batched_input_embed(
                 padded_embeds[i] = torch.cat([embed, pad_embed], dim=1)
         else:
             padded_embeds[i] = embed
-    
+
     return padded_embeds
 
 
@@ -315,7 +311,7 @@ def prepare_sample_input(
         input_chunk_sizes.append(context_ids.size(1))
         context_embed = model.model.embed_tokens(context_ids.to(device))
         input_embed_list.append(context_embed)
-    
+
     for data_str in sample["documents"]:
         data_input = tokenizer(
             [data_str],
@@ -330,7 +326,7 @@ def prepare_sample_input(
 
         input_chunk_sizes.append(wrapped_data_embed.size(1))
         input_embed_list.append(wrapped_data_embed)
-    
+
     query_input = tokenizer(
         sample["task_prompt"],
         add_special_tokens=False,
@@ -452,7 +448,7 @@ def build_generation_cache(
 ) -> GenerationCache:
     if generation_cache is None:
         generation_cache = GenerationCache()
-    
+
     # Determine which samples need generation
     samples_to_gen = [
         sample for sample in samples
@@ -463,13 +459,13 @@ def build_generation_cache(
         return generation_cache
 
     input_strs = [
-        sample["preamble"] + " ".join(sample["documents"]) + 
+        sample["preamble"] + " ".join(sample["documents"]) +
         " " + sample["task_prompt"] for sample in samples_to_gen
     ]
 
     if batch_size <= 0:
         batch_size = len(input_strs)
-    
+
     with alive_bar(total=len(input_strs), title="Building generation cache") as bar:
         for i in range(0, len(input_strs), batch_size):
             batch_input_strs = input_strs[i: i + batch_size]

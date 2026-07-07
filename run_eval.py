@@ -35,8 +35,6 @@ class DatasetConfig(TypedDict):
     split: str
     seed: int
     data_kwargs: dict
-    template: str
-    template_kwargs: dict
 
 
 class CompressConfig(TypedDict):
@@ -94,8 +92,6 @@ def load_eval_config(loaded_json: dict) -> EvalConfig:
         split=loaded_json["dataset"]["split"],
         seed=loaded_json["dataset"]["seed"],
         data_kwargs=loaded_json["dataset"].get("data_kwargs", {}),
-        template=loaded_json["dataset"].get("template", "default"),
-        template_kwargs=loaded_json["dataset"].get("template_kwargs", {}),
     )
     cache_comb = CacheCombConfig(
         method=loaded_json["cache_comb"]["method"],
@@ -110,7 +106,7 @@ def load_eval_config(loaded_json: dict) -> EvalConfig:
         )
     else:
         quantization_config = None
-    
+
     compress_config_dict = loaded_json.get("compress", None)
     if compress_config_dict is not None:
         compress_config = CompressConfig(
@@ -311,7 +307,7 @@ def run_eval(
         total_ttft += ttft
         total_flops += flops
         num_eval += 1
-    
+
     precision, recall, f1 = calculate_metrics(total_tp, total_fp, total_fn)
     avg_ttft = total_ttft / num_eval if num_eval > 0 else 0.0
     avg_flops = total_flops / num_eval if num_eval > 0 else 0.0
@@ -406,9 +402,8 @@ def run_one_config(
         subset=eval_config["dataset"]["subset"],
         split=eval_config["dataset"]["split"],
         seed=eval_config["dataset"]["seed"],
+        tokenizer=tokenizer,
         data_kwargs=eval_config["dataset"]["data_kwargs"],
-        template=eval_config["dataset"]["template"],
-        template_kwargs=eval_config["dataset"]["template_kwargs"],
     )
 
     answer_postprocess_func = ANSWER_POSTPROCESS_DICT.get(
