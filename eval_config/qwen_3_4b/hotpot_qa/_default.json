@@ -1,6 +1,6 @@
 {
     "model": {
-        "model_path": "/mnt/storage/data/model_files/qwen_3/4b_instruct/model/",
+        "model_path": "Qwen/Qwen3-4B-Instruct-2507",
         "dtype": "bfloat16",
         "device": "cuda:0",
         "generation_kwargs": {
