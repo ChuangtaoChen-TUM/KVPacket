@@ -23,9 +23,7 @@
             "seed": 42,
             "data_kwargs": {
                 "chunk_size": 2048
-            },
-            "template": "llama_chat",
-            "template_kwargs": {}
+            }
         },
         "cache_comb": {
             "method": "kv_packet",

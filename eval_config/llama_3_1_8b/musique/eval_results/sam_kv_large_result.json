@@ -24,9 +24,7 @@
             "data_kwargs": {
                 "add_inst": true,
                 "add_cot": true
-            },
-            "template": "llama_chat",
-            "template_kwargs": {}
+            }
         },
         "cache_comb": {
             "method": "sam_kv",

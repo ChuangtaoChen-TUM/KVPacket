@@ -23,9 +23,7 @@
             "seed": 42,
             "data_kwargs": {
                 "question_type": "QA"
-            },
-            "template": "llama_chat",
-            "template_kwargs": {}
+            }
         },
         "cache_comb": {
             "method": "sam_kv",
