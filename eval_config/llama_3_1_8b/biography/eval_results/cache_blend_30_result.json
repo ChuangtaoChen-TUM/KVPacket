@@ -23,9 +23,6 @@
             "seed": 42,
             "data_kwargs": {
                 "question_type": "QA"
-            },
-            "template_kwargs": {
-                "question_pos": "end"
             }
         },
         "cache_comb": {
