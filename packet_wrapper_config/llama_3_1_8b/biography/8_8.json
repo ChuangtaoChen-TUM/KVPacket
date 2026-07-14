@@ -42,10 +42,6 @@
             "data_kwargs": {
                 "question_type": "QA",
                 "cache_dataset": true
-            },
-            "template": "llama_chat",
-            "template_kwargs": {
-                "question_pos": "end"
             }
         },
         {
@@ -59,10 +55,6 @@
             "data_kwargs": {
                 "question_type": "QA",
                 "cache_dataset": true
-            },
-            "template": "llama_chat",
-            "template_kwargs": {
-                "question_pos": "end"
             }
         },
         {
@@ -76,10 +68,6 @@
             "data_kwargs": {
                 "question_type": "QA",
                 "cache_dataset": true
-            },
-            "template": "llama_chat",
-            "template_kwargs": {
-                "question_pos": "end"
             }
         },
         {
@@ -93,10 +81,6 @@
             "data_kwargs": {
                 "question_type": "QA",
                 "cache_dataset": true
-            },
-            "template": "llama_chat",
-            "template_kwargs": {
-                "question_pos": "end"
             }
         }
     ]

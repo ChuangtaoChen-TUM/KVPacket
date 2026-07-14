@@ -23,8 +23,7 @@
         "data_kwargs": {
             "add_inst": true,
             "add_cot": true
-        },
-        "template": "llama_chat"
+        }
     },
     "seed": 42,
     "cache_comb": {

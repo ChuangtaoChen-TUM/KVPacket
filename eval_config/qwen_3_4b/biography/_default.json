@@ -22,8 +22,7 @@
         "seed": 42,
         "data_kwargs": {
             "question_type": "QA"
-        },
-        "template": "qwen_3_chat"
+        }
     },
     "seed": 42
 }

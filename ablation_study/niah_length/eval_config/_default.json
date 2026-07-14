@@ -19,8 +19,7 @@
         "num_shots": 0,
         "subset": "8192",
         "split": "test",
-        "seed": 42,
-        "template": "llama_chat"
+        "seed": 42
     },
     "seed": 42
 }

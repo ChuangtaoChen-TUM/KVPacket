@@ -41,8 +41,7 @@
             "seed": 0,
             "data_kwargs": {
                 "chunk_size": 4096
-            },
-            "template": "llama_chat"
+            }
         }
     ]
 }

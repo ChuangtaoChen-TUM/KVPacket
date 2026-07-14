@@ -40,8 +40,7 @@
             "data_kwargs": {
                 "chunk_size": 4096,
                 "max_len": 24000
-            },
-            "template": "llama_chat"
+            }
         }
     ]
 }

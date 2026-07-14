@@ -42,8 +42,7 @@
             "data_kwargs": {
                 "question_type": "QA",
                 "cache_dataset": true
-            },
-            "template": "qwen_3_chat"
+            }
         },
         {
             "dataset_name": "biography",
@@ -56,8 +55,7 @@
             "data_kwargs": {
                 "question_type": "QA",
                 "cache_dataset": true
-            },
-            "template": "qwen_3_chat"
+            }
         },
         {
             "dataset_name": "biography",
@@ -70,8 +68,7 @@
             "data_kwargs": {
                 "question_type": "QA",
                 "cache_dataset": true
-            },
-            "template": "qwen_3_chat"
+            }
         },
         {
             "dataset_name": "biography",
@@ -84,8 +81,7 @@
             "data_kwargs": {
                 "question_type": "QA",
                 "cache_dataset": true
-            },
-            "template": "qwen_3_chat"
+            }
         }
     ]
 }

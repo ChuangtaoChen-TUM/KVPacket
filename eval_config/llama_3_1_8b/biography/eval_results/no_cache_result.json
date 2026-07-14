@@ -24,7 +24,6 @@
             "data_kwargs": {
                 "question_type": "QA"
             },
-            "template": "llama_chat",
             "template_kwargs": {
                 "question_pos": "end"
             }

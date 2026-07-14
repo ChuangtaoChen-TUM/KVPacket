@@ -22,8 +22,7 @@
         "seed": 42,
         "data_kwargs": {
             "chunk_size": 4096
-        },
-        "template": "llama_chat"
+        }
     },
     "seed": 42
 }
