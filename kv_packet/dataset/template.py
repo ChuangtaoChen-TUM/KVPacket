@@ -12,10 +12,10 @@ def apply_chat_template(
     context_str = eval_entry["preamble"]
     question_str = eval_entry["task_prompt"]
 
-    messages: list[dict[str, str]] = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": f"{{DOCUMENT_PLACEHOLDER}}"},
-    ]
+    messages: list[dict[str, str]] = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": "{DOCUMENT_PLACEHOLDER}"})
 
     formatted = tokenizer.apply_chat_template(
         messages,
@@ -24,7 +24,7 @@ def apply_chat_template(
     )
     assert isinstance(formatted, str)
 
-    pivot = f"{{DOCUMENT_PLACEHOLDER}}"
+    pivot = "{DOCUMENT_PLACEHOLDER}"
     start_idx = formatted.index(pivot)
     preamble = formatted[:start_idx] + context_str
     task_prompt = question_str + formatted[start_idx + len(pivot):]
