@@ -1,0 +1,70 @@
+{
+  "model": {
+    "model_path": "Qwen/Qwen3-4B-Instruct-2507",
+    "revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+    "dtype": "bfloat16",
+    "device_map": "cuda:0",
+    "attention_implementation": "sdpa"
+  },
+  "wrapper": {
+    "id": "agent-instructions",
+    "header_len": 8,
+    "trailer_len": 8,
+    "initialization": {
+      "strategy": "model-embedding"
+    }
+  },
+  "optimizer": {
+    "lr": 0.001,
+    "weight_decay": 0.0
+  },
+  "training": {
+    "epochs": 5,
+    "batch_size": 4,
+    "forward_batch_size": 1,
+    "target_tokens_per_step": 512
+  },
+  "generation": {
+    "max_turns": 5,
+    "max_new_tokens": 192,
+    "do_sample": false
+  },
+  "prompts": [
+    {
+      "id": "packet-session-file",
+      "question": "Which repository-relative file defines class `PacketSession`? Reply with only the path."
+    },
+    {
+      "id": "training-sample-file",
+      "question": "Which repository-relative file defines class `TrainingSample`? Reply with only the path."
+    },
+    {
+      "id": "tool-parser-file",
+      "question": "Which repository-relative file defines class `QwenToolCallParser`? Reply with only the path."
+    },
+    {
+      "id": "packet-store-file",
+      "question": "Which repository-relative file defines class `PacketStore`? Reply with only the path."
+    },
+    {
+      "id": "session-export-method",
+      "question": "What is the name of the public `PacketSession` method that returns the latest recorded training sample? Reply with only the method name."
+    },
+    {
+      "id": "serve-app-function",
+      "question": "What function in `kvpacket/serve/http/app.py` constructs the Responses-compatible ASGI application? Reply with only the function name."
+    },
+    {
+      "id": "packet-wrapper-bases",
+      "question": "What direct base class is declared for `PacketWrapper`? Reply with only the class name."
+    },
+    {
+      "id": "store-missing-error",
+      "question": "What exception type does `PacketStore.get` raise when a packet ID is missing? Reply with only the exception name."
+    }
+  ],
+  "seed": 42,
+  "repository_root": ".",
+  "artifact_dir": "${KVP_STORAGE}/examples/codex_agent",
+  "pretrained_wrapper": "tasks/agentic_flow/repository_qa/checkpoints/qwen3_4b_repository_navigation.pt"
+}

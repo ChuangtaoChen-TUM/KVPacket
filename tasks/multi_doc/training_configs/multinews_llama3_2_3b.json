@@ -1,0 +1,60 @@
+{
+  "model": {
+    "model_path": "meta-llama/Llama-3.2-3B-Instruct",
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "generation_kwargs": {"max_new_tokens": 384, "do_sample": false}
+  },
+  "wrapper": {
+    "id": "multinews_document",
+    "header_len": 8,
+    "trailer_len": 8,
+    "dtype": "float32",
+    "initialization": {"strategy": "model-embedding"}
+  },
+  "objective": "teacher_kl",
+  "loss_reduction": "token_mean",
+  "epochs": 5,
+  "batch_size": 64,
+  "target_tokens_per_step": 8192,
+  "forward_batch_size": 1,
+  "gradient_checkpointing": true,
+  "record_prefill_chunk_size": 2048,
+  "seed": 42,
+  "optimizer": {"lr": 0.001, "weight_decay": 0.0},
+  "training_data": {
+    "dataset_name": "multinews",
+    "num_samples": 96,
+    "num_documents": 0,
+    "num_shots": 0,
+    "subset": "default",
+    "split": "train",
+    "seed": 42,
+    "data_kwargs": {
+      "min_documents": 2,
+      "max_documents": 8,
+      "max_total_chars": 30000,
+      "cache_dataset": true
+    }
+  },
+  "evaluation": {
+    "dataset_name": "multinews",
+    "num_samples": 24,
+    "num_documents": 0,
+    "num_shots": 0,
+    "subset": "default",
+    "split": "validation",
+    "seed": 55,
+    "max_new_tokens": 384,
+    "methods": ["full_recompute", "no_recompute", "kv_packet"],
+    "data_kwargs": {
+      "min_documents": 2,
+      "max_documents": 8,
+      "max_total_chars": 30000,
+      "cache_dataset": true
+    }
+  },
+  "artifact_dir": "${KVP_STORAGE}/kvpacket/multi_doc_training/multinews_llama3_2_3b/run",
+  "record_artifact_dir": "${KVP_STORAGE}/kvpacket/multi_doc_training/multinews_llama3_2_3b/records",
+  "result_path": "outputs/multi_doc_training/multinews_llama3_2_3b.json"
+}

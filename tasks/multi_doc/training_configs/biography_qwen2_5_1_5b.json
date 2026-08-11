@@ -1,0 +1,87 @@
+{
+  "model": {
+    "model_path": "Qwen/Qwen2.5-1.5B",
+    "dtype": "bfloat16",
+    "generation_kwargs": {
+      "max_new_tokens": 64,
+      "do_sample": false
+    }
+  },
+  "wrapper": {
+    "id": "biography_document",
+    "header_len": 8,
+    "trailer_len": 8,
+    "initialization": {
+      "strategy": "fixed",
+      "mean": 0.0,
+      "std": 0.02
+    }
+  },
+  "objective": "teacher_kl",
+  "loss_reduction": "token_mean",
+  "epochs": 30,
+  "batch_size": 64,
+  "forward_batch_size": 1,
+  "seed": 42,
+  "optimizer": {
+    "lr": 0.0005,
+    "weight_decay": 0.0
+  },
+  "training_data": [
+    {
+      "dataset_name": "biography",
+      "num_samples": 64,
+      "num_documents": 2,
+      "num_shots": 0,
+      "subset": "10k",
+      "split": "train",
+      "seed": 0,
+      "data_kwargs": {"question_type": "QA", "cache_dataset": true}
+    },
+    {
+      "dataset_name": "biography",
+      "num_samples": 64,
+      "num_documents": 3,
+      "num_shots": 0,
+      "subset": "10k",
+      "split": "train",
+      "seed": 1,
+      "data_kwargs": {"question_type": "QA", "cache_dataset": true}
+    },
+    {
+      "dataset_name": "biography",
+      "num_samples": 64,
+      "num_documents": 5,
+      "num_shots": 0,
+      "subset": "10k",
+      "split": "train",
+      "seed": 2,
+      "data_kwargs": {"question_type": "QA", "cache_dataset": true}
+    },
+    {
+      "dataset_name": "biography",
+      "num_samples": 64,
+      "num_documents": 7,
+      "num_shots": 0,
+      "subset": "10k",
+      "split": "train",
+      "seed": 3,
+      "data_kwargs": {"question_type": "QA", "cache_dataset": true}
+    }
+  ],
+  "evaluation": {
+    "dataset_name": "biography",
+    "num_samples": 32,
+    "num_documents": 3,
+    "num_shots": 0,
+    "subset": "10k",
+    "split": "test",
+    "seed": 0,
+    "max_new_tokens": 32,
+    "methods": ["full_recompute", "no_recompute", "kv_packet"],
+    "data_kwargs": {"question_type": "QA", "cache_dataset": true}
+  },
+  "artifact_dir": "${KVP_STORAGE}/kvpacket/multi_doc_training/biography_qwen2_5_1_5b/run",
+  "record_artifact_dir": "${KVP_STORAGE}/kvpacket/multi_doc_training/biography_qwen2_5_1_5b/records",
+  "result_path": "outputs/multi_doc_training/biography_qwen2_5_1_5b.json"
+}

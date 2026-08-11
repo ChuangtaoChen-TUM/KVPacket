@@ -1,0 +1,49 @@
+{
+  "model": {
+    "model_path": "meta-llama/Llama-3.2-3B-Instruct",
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "generation_kwargs": {"max_new_tokens": 128, "do_sample": false}
+  },
+  "wrapper": {
+    "id": "gsm8k_dependent_document",
+    "header_len": 8,
+    "trailer_len": 8,
+    "dtype": "float32",
+    "initialization": {"strategy": "model-embedding"}
+  },
+  "objective": "teacher_kl",
+  "loss_reduction": "token_mean",
+  "epochs": 5,
+  "batch_size": 64,
+  "target_tokens_per_step": 4096,
+  "forward_batch_size": 1,
+  "gradient_checkpointing": true,
+  "seed": 42,
+  "optimizer": {"lr": 0.001, "weight_decay": 0.0},
+  "training_data": {
+    "dataset_name": "gsm8k_dependent",
+    "num_samples": 128,
+    "num_documents": 4,
+    "num_shots": 0,
+    "subset": "main",
+    "split": "train",
+    "seed": 42,
+    "data_kwargs": {"cache_dataset": true}
+  },
+  "evaluation": {
+    "dataset_name": "gsm8k_dependent",
+    "num_samples": 50,
+    "num_documents": 4,
+    "num_shots": 0,
+    "subset": "main",
+    "split": "test",
+    "seed": 55,
+    "max_new_tokens": 128,
+    "methods": ["full_recompute", "no_recompute", "kv_packet"],
+    "data_kwargs": {"cache_dataset": true}
+  },
+  "artifact_dir": "${KVP_STORAGE}/kvpacket/multi_doc_training/gsm8k_dependent_llama3_2_3b/run",
+  "record_artifact_dir": "${KVP_STORAGE}/kvpacket/multi_doc_training/gsm8k_dependent_llama3_2_3b/records",
+  "result_path": "outputs/multi_doc_training/gsm8k_dependent_llama3_2_3b.json"
+}

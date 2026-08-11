@@ -1,0 +1,15 @@
+{
+  "_comment": "Paper-reproduction (stretch): trained Qwen3-4B adapter (converted to kvpacket.wrapper/1) on biography-QA. Needs the model downloaded to HF_HOME. Adapter dim 2560 matches Qwen3-4B.",
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "dtype": "bfloat16",
+  "dataset": "biography",
+  "subset": "10k",
+  "split": "test",
+  "num_samples": 32,
+  "num_documents": 3,
+  "num_shots": 0,
+  "seed": 0,
+  "max_new_tokens": 32,
+  "dataset_kwargs": {"question_type": "QA"},
+  "packet": {"header_len": 8, "trailer_len": 8, "path": "tests/reference/adapters/qwen3_4b_biography_8_8.pt"}
+}

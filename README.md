@@ -1,175 +1,294 @@
-<p align="center">
-  <h3 align="center"><strong>KV Packet: Recomputation-Free Context-Independent KV Caching for LLMs </strong></h3>
+<h2 align="center">KV Packet: Recomputation-Free Context-Independent KV Caching for LLMs</h2>
 
 <p align="center">
-    Chuangtao Chen<sup>1</sup>,
-    Grace Li Zhang<sup>2</sup>,
-    XunZhao Yin<sup>3</sup>,
-    Cheng Zhuo<sup>3</sup>,
-    Bing Li<sup>4</sup>,
-    Ulf Schlichtmann<sup>1</sup><br>
-    <sup>1</sup>Technical University of Munich,
-    <sup>2</sup>Technical University of Darmstadt<br>
-    <sup>3</sup>Zhejiang Univerity,
-    <sup>4</sup>Technische Universität Ilmenau
-</p>
-
-
-
-<div align="center">
-
-<a href='https://arxiv.org/abs/2604.13226'><img src='https://img.shields.io/badge/arXiv-2604.13226-b31b1b.svg'></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- <a href='LICENSE'><img src='https://img.shields.io/badge/License-MIT-blue'></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</div>
-
-<p align="center">
-    <img src="./res/cache_pipeline.png" alt width="700" >
-    <em><br>(a) Recomputation-based approaches require inference-time algorithms to select and recompute important tokens to repair contextual staleness; (b) the proposed KV Packet approach wraps documents with global adapters.</em>
+  Chuangtao Chen<sup>1</sup>,
+  Grace Li Zhang<sup>2</sup>,
+  Xunzhao Yin<sup>3</sup>,
+  Cheng Zhuo<sup>3</sup>,
+  Bing Li<sup>4</sup>,
+  Ulf Schlichtmann<sup>1</sup><br>
+  <sup>1</sup>Technical University of Munich,
+  <sup>2</sup>Technical University of Darmstadt<br>
+  <sup>3</sup>Zhejiang University,
+  <sup>4</sup>Technische Universität Ilmenau
 </p>
 
 <p align="center">
-    <img src="./res/main_results.png" alt width="600" >
-    <em><br>Evaluation results (F1 score, FLOPs, Time-to-First-Token) of Llama-3.1-8B / Qwen-3-4B on datasets: Needle-in-a-Haystack, Biography, HotpotQA, and MusiQue.</em>
+  <a href="https://arxiv.org/abs/2604.13226"><img src="https://img.shields.io/badge/arXiv-2604.13226-b31b1b.svg" alt="arXiv"></a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
 </p>
 
 # KV Packet
 
-**KV Packet** is a framework for reusing precomputed KV caches across documents in multi-document RAG settings, without recomputation.
+Recomputation-free, context-independent KV caching for LLMs via trainable
+soft-token **header/trailer** adapters. Independently precomputed document KV
+caches are stitched together at serving time with only cheap RoPE realignment —
+no token recomputation.
 
-## Core Idea
+This repository is the reusable library implementation of
+[*KV Packet: Recomputation-Free Context-Independent KV Caching for
+LLMs*](https://arxiv.org/abs/2604.13226). It focuses on KV Packet
+itself rather than competing research baselines, and also includes a controlled
+evaluation track for **agentic / skill-based flows**.
 
-Each document's KV cache is wrapped with a small set of trainable soft-token vectors — a **header** prepended before the document and a **trailer** appended after it. At inference time, independently cached documents are directly concatenated. No recomputation is needed.
+> **Repository branches:** `main` contains the maintained KV Packet library. The
+> [`paper-artifact`](https://github.com/ChuangtaoChen-TUM/KVPacket/tree/paper-artifact)
+> branch preserves the original paper experiments, competing baselines,
+> configurations, and result-processing scripts.
 
-**Why it works:** Naive KV cache concatenation fails because of boundary artifacts — disrupted attention sinks and abrupt token distribution shifts at block boundaries. The learned adapter vectors act as smooth delimiters that absorb these artifacts, restoring output quality close to full-attention inference.
+> **Status:** the core library, multi-document examples, and controlled agentic flow
+> are implemented. See the [documentation](https://github.com/ChuangtaoChen-TUM/KVPacket/blob/main/docs/index.md)
+> for architecture and environment guidance, and the
+> [multi-document tasks](https://github.com/ChuangtaoChen-TUM/KVPacket/tree/main/tasks/multi_doc)
+> for evaluation and adapter training.
 
-**Training:** Adapters are trained via self-supervised KL distillation. The model's own full-attention output serves as the teacher signal, and only the small adapter tensors receive gradients. No labeled data or base model modification is needed.
+## Method overview
 
-**Key results:**
-- ~4–6 orders of magnitude fewer FLOPs than recomputation-based baselines (CacheBlend, EPIC, A3)
-- Lower TTFT than all recomputation methods
-- Competitive F1 on retrieval (NIAH, Biography) and reasoning (HotpotQA, MuSiQue) benchmarks
-- Naturally compatible with KV compression techniques
-- Storage overhead of 0.4%–6% for realistic document lengths (≥512 tokens)
+<p align="center">
+  <img src="./docs/assets/cache_pipeline.png" width="900" alt="Comparison of recomputation-based KV-cache reuse and KV Packet">
+  <em><br>(a) Recomputation-based methods select and recompute cached tokens online.
+  (b) KV Packet learns reusable header/trailer wrappers offline, enabling positional
+  realignment and direct cache concatenation without document-token recomputation.</em>
+</p>
 
-**Models tested:** Llama-3.1-8B-Instruct and Qwen2.5/3.
+## Installation
 
----
-
-## Project Structure
-
-```
-kv_packet_clean/
-├── run_train_filler.py         # Phase 1: train header/trailer adapters
-├── run_eval.py                 # Phase 2: evaluate on benchmarks
-├── run_build_packet.py         # Ablation A.1: initialize wrapper from handcrafted tokens
-│
-├── kv_packet/                  # Core library
-│   ├── packet_wrapper/         # PacketWrapper: header/trailer parameter tensors
-│   ├── cache/                  # KV cache storage, quantization, compression, re-rotation
-│   ├── cache_comb/             # Cache combination methods (KV Packet + all baselines)
-│   ├── dataset/                # Dataset loaders (Biography, HotpotQA, NIAH, MuSiQue)
-│   ├── model/                  # Supported model type definitions
-│   └── utils/                  # Training loop, generation cache, metrics, config loader
-│
-├── packet_wrapper_config/      # Training configs organised by model and dataset
-├── eval_config/                # Evaluation configs organised by model and dataset
-├── ablation_study/             # Ablation experiments (loss type, explicit tokens)
-└── plot_scripts/               # Result visualisation
-```
-
----
-
-## Workflow
-
-### Train
-
-Trains the header and trailer adapters on one or more retrieval datasets. Only the wrapper parameters receive gradients; the base model is frozen throughout.
+Install the library from PyPI:
 
 ```bash
-python run_train_filler.py <config.json> [<config2.json> ...]
-# or pass a directory to pick up all configs inside it
-python run_train_filler.py packet_wrapper_config/llama_3_1_8b/mixture/
+pip install kvpacket
 ```
 
-Checkpoints can be saved using the config. Training can be resumed from a checkpoint by setting `resume: true` in the config.
-
-### Evaluate
-
-Runs one or more evaluation configs and writes results as JSON files alongside each config.
+Install optional integrations as needed:
 
 ```bash
-python run_eval.py <config.json or directory> [--overwrite] [--debug]
+pip install "kvpacket[compress]"  # KVPress cache compression
+pip install "kvpacket[serve]"     # OpenAI Responses-compatible HTTP/SSE transport
+pip install "kvpacket[agent]"     # MCP support for agent examples
 ```
 
-`--overwrite` re-runs configs that already have a result file. `--debug` disables the progress bar.
+KV Packet requires Python 3.12 or newer. Install the PyTorch build appropriate for
+your compute platform before loading a model.
 
-Results are written to `eval_results/<config_name>_result.json` next to each config file.
+### Development installation
 
-### Setup
+When working from a clone of this repository, create the locked development
+environment with `uv`:
 
-Before running training or evaluation, update the `model.model_path` field in all config files to point to your local model directory or a HuggingFace model identifier. The default paths in the example configs may not exist on your system.
+```bash
+uv sync
+uv run python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+```
 
+Large-model experiments can optionally redirect environments, package caches, and
+model weights to a user-chosen storage location. See
+[the environment guide](https://github.com/ChuangtaoChen-TUM/KVPacket/blob/main/docs/getting-started.md)
+for a portable example.
 
----
+## Project structure
 
-## Training Configuration Reference
+```text
+KVPacket/
+├── kvpacket/                 # Installable library
+│   ├── backend/              # Compute protocols and Hugging Face backend
+│   ├── packet/               # Sources, wrappers, encoding, and registry
+│   ├── kvcache/              # Cache tensors, positions, and RoPE operations
+│   ├── runtime/              # Reentrant matching and packet-aware execution
+│   ├── session/              # Stateful recording, serving, and packet storage
+│   ├── training/             # Wrapper initialization and distillation
+│   ├── compression/          # Optional KVPress integration
+│   ├── serve/                # Optional codecs, adapters, state, and HTTP/SSE
+│   └── preprocessing.py      # Offline source-to-packet construction
+├── tasks/
+│   ├── multi_doc/            # Record, train, and evaluate multi-document tasks
+│   └── agentic_flow/         # Controlled agent and skill-flow examples
+├── examples/                  # Focused serving integration examples
+├── docs/                      # Concepts, guides, and API reference
+├── tests/                     # Unit, integration, and reference-parity tests
+└── pyproject.toml             # Package metadata and dependency groups
+```
 
-See [res/train_config.md](./res/train_config.md) for the full field reference, sub-block descriptions, and an example config.
+Start with the [documentation index](docs/index.md) for setup, guides, and API
+reference, or read the [architecture overview](docs/concepts/architecture.md) for
+layer ownership and the offline, online, and training execution paths.
 
----
+The layers above `PacketExecutor` are optional: applications with an existing request
+adapter, model renderer, or session manager can integrate directly with the reentrant
+runtime. `PacketPreprocessor` and `PacketTrainer` construct the wrappers and packet
+stores consumed by that online core.
 
-## Evaluation Configuration Reference
+## Backend selection
 
-See [res/eval_config.md](./res/eval_config.md) for the full field reference, all available cache combination methods with their kwargs, compress/quantization blocks, and example configs.
+Inference sessions require an explicit compute backend. The Hugging Face backend owns
+Hugging Face model capability checks; the session engine stays backend-agnostic.
 
----
+```python
+from kvpacket import HFBackend, PacketSession
 
-## Config Inheritance
+backend = HFBackend(model)
+session = PacketSession(backend=backend, tokenizer=tokenizer)
+```
 
-Both training and evaluation configs support a `_default.json` file in the same directory. When a config is loaded, its values extend (but do not overwrite) the defaults. This means a per-method override file only needs to list the fields that differ.
+Source preprocessing is separate from the compute backend. Use `TextSourceEncoder` for
+`RawText` and local text files, or provide another framework-side `SourceEncoder` for a
+different modality.
 
-Fields present only in the override are added. Fields present in both default and override are kept from the **default** unless `broadcast_dict` is called in overwrite mode. Cycle detection prevents circular inheritance.
+`backend.forward(...)` performs one independent or cache-extending model call;
+`PacketSession` orchestrates repeated incremental calls and generation.
+`backend.prefill_caches(...)` is the offline batched operation used to construct
+independent packet caches while removing padding.
 
----
+## Serving preprocessed packets
 
-## Evaluation Metrics
+Wrapper selection happens only during offline preprocessing. Serving registers the
+stored match representations and keeps `push()` / `generate()` wrapper-agnostic:
 
-Each evaluation run reports the following per-config:
+```python
+store = PacketStore.load("agent-packets.pt", backend=backend)
+session = PacketSession(backend=backend, store=store, tokenizer=tokenizer)
+session.register_store_chunks()
+session.push(prompt_containing_registered_content)
+result = session.generate()
+```
 
-| Metric | Description |
-|--------|-------------|
-| `precision` | Token-level precision of the generated answer vs. the ground-truth answer. |
-| `recall` | Token-level recall. |
-| `f1` | Harmonic mean of precision and recall. Primary benchmark metric. |
-| `ttft` | Average time-to-first-token in seconds across samples. |
-| `flops` | Average FLOPs for KV re-rotation (relevant to KV Packet; zero for non-rotation methods). |
-| `num_orig_tokens` | Total original document tokens processed (before wrapping). |
-| `num_wrapped_tokens` | Total tokens after adding header and trailer padding. |
+Registration verifies that the session tokenizer reproduces the preprocessed
+tokens. It never rebuilds packets or reloads wrapper tensors.
 
----
+## Integrating an existing serving stack
 
-## Supported Models
+`PacketExecutor` exposes the packet-aware forward path without owning conversation
+state. Existing inference servers can retain their current cache/session manager and
+pass a `PacketCacheState` into each operation. Optional higher layers provide a
+model-specific `ModelCodec`, bounded `PacketStateManager`, and pure OpenAI Responses
+and Anthropic Messages adapters.
 
-| Model | Template key |
-|-------|-------------|
-| Llama-3.1-8B-Instruct | `"llama_chat"` |
-| Qwen2.5 / Qwen3-4B | `"qwen_3_chat"` |
+```python
+from kvpacket import PacketCacheState, PacketExecutor
 
-Adding a new model requires implementing a model-specific KV re-rotation in `kv_packet/cache_comb/recompute_kv/` and registering it in `kv_packet/model/`.
+executor = PacketExecutor(backend=backend, store=store)
+result = executor.prefill(PacketCacheState(), rendered_input_ids)
+caller_owned_state = result.cache_state
+first_token_logits = result.first_token_logits
+```
 
+See the [serving guide](https://github.com/ChuangtaoChen-TUM/KVPacket/blob/main/docs/guides/serving.md)
+for the layer contracts and the
+[serving example](https://github.com/ChuangtaoChen-TUM/KVPacket/blob/main/examples/serve_requests.py)
+for direct integration.
+
+### OpenAI Responses HTTP/SSE endpoint
+
+The optional Starlette transport lets OpenAI SDK clients and Codex-style agent
+frameworks route self-contained Responses requests through the same completion engine:
+
+```bash
+uv sync --extra serve
+uv run python -m examples.run_responses_server \
+  --model Qwen/Qwen3-8B \
+  --packet-store checkpoints/agent-packets.pt \
+  --model-alias qwen3-8b-kvpacket
+```
+
+It exposes `POST /v1/responses`, `GET /v1/models`, and `GET /healthz`. Streaming is
+live: text deltas are sent as tokens become safe to expose, followed by function or
+free-form tool-call events and a terminal Responses event. The endpoint retains the
+preprocessed packet catalog but no request history; callers send the complete visible
+conversation on each turn. Binding defaults to `127.0.0.1`, and bearer auth, request
+limits, token limits, and model concurrency are configurable. See
+[Responses server example](https://github.com/ChuangtaoChen-TUM/KVPacket/blob/main/examples/run_responses_server.py)
+and the HTTP section of the
+[serving guide](https://github.com/ChuangtaoChen-TUM/KVPacket/blob/main/docs/guides/serving.md).
+
+## Optional offline cache compression
+
+Install `kvpacket[compress]` and pass a `KVPressCompressor` during preprocessing:
+
+```python
+from kvpacket import KVPressCompressor, PacketPreprocessor
+
+preprocessor = PacketPreprocessor(
+    backend=backend,
+    wrapper_registry=wrapper_registry,
+    source_encoder=source_encoder,
+    cache_compressor=KVPressCompressor("knorm", compression_ratio=0.5),
+)
+```
+
+Compression shortens the physical KV tensors while preserving the original logical
+wrapped-source span for position IDs. Method, version, ratio, options, and both lengths
+are covered by packet identity and persistence. See
+the [compression guide](https://github.com/ChuangtaoChen-TUM/KVPacket/blob/main/docs/guides/compression.md)
+for supported presses and limitations.
+
+## Training recorded samples
+
+`PacketSession` RECORD output is dataset-independent. A trainer reconstructs marked
+spans using source-to-wrapper routing supplied to `PacketTrainer`, so documents,
+skills, and tool descriptions can use different wrappers in one trajectory:
+
+```python
+from kvpacket import PacketTrainer
+
+trainer = PacketTrainer(
+    backend,
+    wrapper_registry,
+    wrapper_assignments={"doc-0": "biography_doc", "skill-0": "powerpoint_skill"},
+    optimize=["biography_doc", "powerpoint_skill"],  # or "all" / "none"
+    objective="teacher_kl",  # or "teacher_ce" for compact token-only teachers
+    loss_reduction="token_mean",  # or "sample_mean"
+    optimizer_kwargs={"lr": 1e-3},
+)
+metrics = trainer.fit(
+    recorded_samples,
+    epochs=3,
+    target_tokens_per_step=2048,
+    batch_size=64,          # maximum samples for token-budget batching
+    forward_batch_size=4,  # optional padded 4-D model forwards
+)
+trainer.save("checkpoints/agent-trainer.pt")
+```
+
+The Hugging Face backend freezes the base model and owns the differentiable model
+call. Only selected header/trailer tensors are optimized. The atomic trainer
+checkpoint contains the full wrapper registry, per-wrapper optimizer states, and
+training provenance; restore it with `PacketTrainer.load(path, backend=backend)`.
+For fixed sample-count training, select `loss_reduction="sample_mean"` and omit
+`target_tokens_per_step`. See the
+[training guide](https://github.com/ChuangtaoChen-TUM/KVPacket/blob/main/docs/guides/training.md).
+
+A complete, intentionally small RECORD → train → evaluate example is available at
+[multi-document training example](https://github.com/ChuangtaoChen-TUM/KVPacket/blob/main/tasks/multi_doc/train.py).
+It uses the synthetic
+multi-document fixture and a compact token-ID teacher by default:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 uv run python tasks/multi_doc/train.py \
+  --config tasks/multi_doc/training_configs/synthetic_qwen.json
+```
+
+For a minimal Codex agent integration, see
+[repository-QA agent example](https://github.com/ChuangtaoChen-TUM/KVPacket/tree/main/tasks/agentic_flow/repository_qa).
+It includes
+a short local prompt list, bounded read-only tools, compact Full Recompute sample
+recording, wrapper training, packet materialization, serving through the
+Responses-compatible endpoint, and an optional read-only MCP server for Codex. The flow
+follows Codex progressive disclosure: skill metadata is initially resident, while only
+the conditionally loaded skill body is packetized. A small trained Qwen3-4B wrapper is
+included; experiment datasets, trajectories, and benchmark baselines are not.
 
 ## Citation
 
-To cite our work:
-```
-@misc{
-    chen2026kvpacket,
-    title={KV Packet: Recomputation-Free Context-Independent KV Caching for LLMs}, 
-    author={Chuangtao Chen and Grace Li Zhang and Xunzhao Yin and Cheng Zhuo and Bing Li and Ulf Schlichtmann},
-    year={2026},
-    eprint={2604.13226},
-    archivePrefix={arXiv},
-    primaryClass={cs.LG},
-    url={https://arxiv.org/abs/2604.13226},
+If you use KV Packet in your work, please cite:
+
+```bibtex
+@misc{chen2026kvpacket,
+  title         = {KV Packet: Recomputation-Free Context-Independent KV Caching for LLMs},
+  author        = {Chuangtao Chen and Grace Li Zhang and Xunzhao Yin and Cheng Zhuo and Bing Li and Ulf Schlichtmann},
+  year          = {2026},
+  eprint        = {2604.13226},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2604.13226},
 }
 ```

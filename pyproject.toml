@@ -1,31 +1,103 @@
-[build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.backends.legacy:build"
-
 [project]
-name = "kv-packet"
+name = "kvpacket"
 version = "0.1.0"
-description = "Reusing precomputed KV caches with trainable soft-token headers and trailers"
-requires-python = ">=3.11"
-dependencies = [
-    # torch CUDA build requires the PyTorch index URL at install time:
-    #   pip install -e . --index-url https://download.pytorch.org/whl/cu130
-    "torch==2.10.0",
-    "transformers==5.3.0",
-    "accelerate==1.13.0",
-    "datasets==2.21.0",
-    "kvpress==0.5.1",
-    "optimum==2.1.0",
-    "optimum-quanto==0.2.7",
-    "alive-progress==3.3.0",
-    "rich==14.3.3",
-    "nltk==3.9.3",
-    "numpy==2.3.5",
-    "pandas==2.3.3",
-    "matplotlib==3.10.8",
-    "dowhen==0.1.0",
+description = "KV Packet: recomputation-free context-independent KV caching via trainable soft-token header/trailer adapters."
+readme = { file = "PYPI_README.md", content-type = "text/markdown" }
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Chuangtao Chen" }]
+keywords = ["large-language-models", "kv-cache", "inference", "rag"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["kv_packet*"]
+# Core runtime dependencies. Dataset, analysis, transport, and compression packages
+# live in explicit groups or extras below.
+dependencies = [
+    "torch>=2.4",
+    "transformers>=5.3,<6",
+    "pyyaml>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ChuangtaoChen-TUM/KVPacket"
+Documentation = "https://github.com/ChuangtaoChen-TUM/KVPacket/tree/main/docs"
+Repository = "https://github.com/ChuangtaoChen-TUM/KVPacket.git"
+Issues = "https://github.com/ChuangtaoChen-TUM/KVPacket/issues"
+Paper = "https://arxiv.org/abs/2604.13226"
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["kvpacket"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/kvpacket",
+    "/docs",
+    "/examples",
+    "/README.md",
+    "/PYPI_README.md",
+    "/LICENSE",
+    "/pyproject.toml",
+]
+
+[project.optional-dependencies]
+# Optional KV cache compression integration.
+compress = [
+    "kvpress>=0.5.1",
+]
+# Optional HTTP/SSE transport for local agent-framework integration.
+serve = [
+    "starlette>=0.46,<1",
+    "uvicorn>=0.34,<1",
+]
+# Optional Model Context Protocol server used by agent-framework examples.
+agent = [
+    "mcp>=1.12,<3",
+]
+
+[dependency-groups]
+# Dependencies used only by the executable examples and dataset tasks.
+tasks = [
+    "accelerate>=1.0",
+    "datasets>=2.21",
+    "numpy>=2.0",
+    "nltk>=3.9",
+    "alive-progress>=3.3",
+    "rich>=14.0",
+]
+# Result plotting and analysis are repository workflows, not library features.
+analysis = [
+    "pandas>=2.3",
+    "matplotlib>=3.10",
+]
+dev = [
+    { include-group = "tasks" },
+    "httpx>=0.27",
+    "mcp>=1.12,<3",
+    "starlette>=0.46,<1",
+    "uvicorn>=0.34,<1",
+    "pytest>=8.0",
+    "ruff>=0.6",
+    "ty>=0.0.61",
+]
+
+# ---------------------------------------------------------------------------
+# Tooling config
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

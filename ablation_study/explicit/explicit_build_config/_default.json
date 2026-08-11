@@ -1,9 +1,0 @@
-{
-    "model": {
-        "model_path": "meta-llama/Llama-3.1-8B-Instruct",
-        "dtype": "bfloat16",
-        "device": "cuda:0"
-    },
-    "save_path": "./ablation_study/explicit/explicit_wrapper/",
-    "dtype": "float32"
-}

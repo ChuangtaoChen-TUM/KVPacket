@@ -1,0 +1,21 @@
+# Copy this file into an isolated CODEX_HOME and set KVP_AGENT_REPOSITORY to the
+# immutable repository snapshot used by the current task.
+model = "qwen3-4b-kvpacket"
+model_provider = "kvpacket"
+approval_policy = "never"
+sandbox_mode = "read-only"
+web_search = "disabled"
+
+[model_providers.kvpacket]
+name = "Local KV Packet server"
+base_url = "http://127.0.0.1:8000/v1"
+wire_api = "responses"
+requires_openai_auth = false
+
+[mcp_servers.repository_qa]
+command = "python"
+args = ["-m", "tasks.agentic_flow.repository_qa.mcp_server"]
+env_vars = ["KVP_AGENT_REPOSITORY", "PYTHONPATH"]
+enabled_tools = ["list_files", "search_text", "read_file"]
+startup_timeout_sec = 20
+tool_timeout_sec = 20

@@ -1,0 +1,52 @@
+{
+  "model": {
+    "model_path": "Qwen/Qwen2.5-1.5B",
+    "dtype": "bfloat16",
+    "generation_kwargs": {
+      "max_new_tokens": 8,
+      "do_sample": false
+    }
+  },
+  "wrapper": {
+    "id": "document",
+    "header_len": 8,
+    "trailer_len": 8,
+    "initialization": {
+      "strategy": "model-embedding"
+    }
+  },
+  "objective": "teacher_ce",
+  "loss_reduction": "token_mean",
+  "epochs": 2,
+  "batch_size": 4,
+  "forward_batch_size": 1,
+  "seed": 42,
+  "optimizer": {
+    "lr": 0.001,
+    "weight_decay": 0.0
+  },
+  "training_data": {
+    "dataset_name": "synthetic",
+    "num_samples": 8,
+    "num_documents": 4,
+    "num_shots": 0,
+    "subset": "default",
+    "split": "train",
+    "seed": 0,
+    "data_kwargs": {}
+  },
+  "evaluation": {
+    "dataset_name": "synthetic",
+    "num_samples": 4,
+    "num_documents": 4,
+    "num_shots": 0,
+    "subset": "default",
+    "split": "test",
+    "seed": 1,
+    "max_new_tokens": 8,
+    "methods": ["full_recompute", "no_recompute", "kv_packet"],
+    "data_kwargs": {}
+  },
+  "artifact_dir": "outputs/multi_doc_training_example/artifacts",
+  "result_path": "outputs/multi_doc_training_example/results.json"
+}
