@@ -16,8 +16,15 @@
 <p align="center">
   <a href="https://arxiv.org/abs/2604.13226"><img src="https://img.shields.io/badge/arXiv-2604.13226-b31b1b.svg" alt="arXiv"></a>
   &nbsp;&nbsp;&nbsp;
+  <a href="https://pypi.org/project/kvpacket/"><img src="https://img.shields.io/pypi/v/kvpacket.svg" alt="PyPI"></a>
+  &nbsp;&nbsp;&nbsp;
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
 </p>
+
+> [!NOTE]
+> 🎉 **KV Packet is now available on [PyPI](https://pypi.org/project/kvpacket/)
+> with support for agentic flows.** Install it with `pip install kvpacket`, then
+> explore the [repository-QA agent example](tasks/agentic_flow/repository_qa).
 
 # KV Packet
 
